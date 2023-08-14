@@ -313,7 +313,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }).then((value) {
           loadingFalse();
           Fluttertoast.showToast(msg: "Registered");
-          NavigationHelper.navStart(context, BottomBarScreen());
+          NavigationHelper.navStart(context, const BottomBarScreen());
         });
       });
     } on FirebaseException catch (e) {

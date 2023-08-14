@@ -16,6 +16,13 @@ class ShowCaseScreen extends StatefulWidget {
 
 class _ShowCaseScreenState extends State<ShowCaseScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getBanners();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: bgColor,
@@ -62,13 +69,17 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
             const SizedBox(height: 10),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 2,
+              itemCount: allBanners.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
-                return BannerCard(
-                    image: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-                    title: "Test",
-                    description: "shdjk ahsdkj ashd jash ajs,hda ksjh askh");
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: BannerCard(
+                      image:
+                      allBanners[i]["imageUrl"],
+                      title: allBanners[i]["bannerName"],
+                      description: allBanners[i]["description"]),
+                );
               },
             ),
             const SizedBox(height: 10),
@@ -82,9 +93,19 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       ),
     );
   }
-  
 
-  
-  
-  
+  List<DocumentSnapshot> allBanners = [];
+
+  _getBanners() {
+    FirebaseFirestore.instance
+        .collection("banners")
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+          allBanners.clear();
+      snapshot.docs.forEach((element) {
+        allBanners.add(element);
+        setState(() {});
+      });
+    });
+  }
 }
