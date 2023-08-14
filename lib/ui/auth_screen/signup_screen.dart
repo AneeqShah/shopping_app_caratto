@@ -310,6 +310,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           'dateOfJoining': _date.text,
           'uid': uid,
           'gender':_currentOption,
+          'isBlocked':false,
         }).then((value) {
           loadingFalse();
           Fluttertoast.showToast(msg: "Registered");

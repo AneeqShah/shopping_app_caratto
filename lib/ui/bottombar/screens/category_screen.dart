@@ -62,7 +62,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       image: allCategory[i]["imageUrl"],
                       onTap: () {
                         NavigationHelper.navPush(
-                            context, const AllProductsScreen());
+                            context,
+                             AllProductsScreen(
+                              productID: allCategory[i]['categoryId'],
+                            ));
                       },
                     );
                   }),
