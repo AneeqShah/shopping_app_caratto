@@ -1,7 +1,8 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/navigation/navigation_helper.dart';
+import 'package:shopping_app/ui/bottombar/screens/products/all_products_screen.dart';
 import 'package:shopping_app/widgets/category_card.dart';
 
 import '../../../utils/constants.dart';
@@ -20,6 +21,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     super.initState();
     _getCategories();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,13 +52,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
             const CupertinoSearchTextField(),
             10.height,
             Container(
-              height: MediaQuery.of(context).size.height*0.7,
+              height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
                   itemCount: allCategory.length,
                   itemBuilder: (context, i) {
-                return CategoryCard(title: allCategory[i]["categoryName"], image: allCategory[i]["imageUrl"]);
-              }),
+                    return CategoryCard(
+                      title: allCategory[i]["categoryName"],
+                      image: allCategory[i]["imageUrl"],
+                      onTap: () {
+                        NavigationHelper.navPush(
+                            context, const AllProductsScreen());
+                      },
+                    );
+                  }),
             )
           ],
         ),

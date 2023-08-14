@@ -22,6 +22,8 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
     _getBanners();
   }
 
+  List<DocumentSnapshot> filterList = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +31,9 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           "Showcase",
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
             fontSize: 20,
@@ -49,7 +51,12 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
         child: Column(
           children: [
             10.height,
-            const CupertinoSearchTextField(),
+            CupertinoSearchTextField(
+              onChanged: (value) {
+                _filter(value);
+                setState(() {});
+              },
+            ),
             10.height,
             SizedBox(
               height: 100,
@@ -69,16 +76,22 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
             const SizedBox(height: 10),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: allBanners.length,
+              itemCount:
+                  filterList.isEmpty ? allBanners.length : filterList.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: BannerCard(
-                      image:
-                      allBanners[i]["imageUrl"],
-                      title: allBanners[i]["bannerName"],
-                      description: allBanners[i]["description"]),
+                      image: filterList.isEmpty
+                          ? allBanners[i]["imageUrl"]
+                          : filterList[i]["imageUrl"],
+                      title: filterList.isEmpty
+                          ? allBanners[i]["bannerName"]
+                          : filterList[i]["bannerName"],
+                      description: filterList.isEmpty
+                          ? allBanners[i]["description"]
+                          : filterList[i]["description"]),
                 );
               },
             ),
@@ -101,11 +114,22 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
         .collection("banners")
         .snapshots()
         .listen((QuerySnapshot snapshot) {
-          allBanners.clear();
+      allBanners.clear();
       snapshot.docs.forEach((element) {
         allBanners.add(element);
         setState(() {});
       });
     });
+  }
+
+  _filter(String name) {
+    filterList.clear();
+    for (var item in allBanners) {
+      var title = item['bannerName'].toString().toLowerCase();
+      if (title.toLowerCase().toString().contains(name.toString())) {
+        filterList.add(item);
+        setState(() {});
+      }
+    }
   }
 }

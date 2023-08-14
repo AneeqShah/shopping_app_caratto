@@ -4,13 +4,13 @@ import 'package:shopping_app/widgets/custom_image_container.dart';
 class CategoryCard extends StatelessWidget {
   final String title;
   final String image;
-
-  const CategoryCard({super.key, required this.title, required this.image});
+  final Function onTap;
+  const CategoryCard({super.key, required this.title, required this.image, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
+    return InkWell(
+      onTap: ()=> onTap(),
       child: Card(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
