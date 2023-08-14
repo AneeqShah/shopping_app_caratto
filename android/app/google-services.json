@@ -1,0 +1,119 @@
+{
+  "project_info": {
+    "project_number": "525520101020",
+    "firebase_url": "https://carato-shopping-app-default-rtdb.firebaseio.com",
+    "project_id": "carato-shopping-app",
+    "storage_bucket": "carato-shopping-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525520101020:android:71c2671ce25029b4451759",
+        "android_client_info": {
+          "package_name": "com.example.order_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYRVJTby7UJYXyNiWy3aItnZAZEr8BUIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "525520101020-5g0cq4qqcthdnjj20e3cmcd54q3mcbo3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.solodev.shoppingAdminPanel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525520101020:android:60bd2793a544d2cf451759",
+        "android_client_info": {
+          "package_name": "com.solodev.shopping_admin_panel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYRVJTby7UJYXyNiWy3aItnZAZEr8BUIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "525520101020-5g0cq4qqcthdnjj20e3cmcd54q3mcbo3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.solodev.shoppingAdminPanel"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525520101020:android:8bc9c7a43138b7f1451759",
+        "android_client_info": {
+          "package_name": "com.solodev.shopping_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYRVJTby7UJYXyNiWy3aItnZAZEr8BUIs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525520101020-p0anvpvsf72cr3mug878moes5t5caf6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "525520101020-5g0cq4qqcthdnjj20e3cmcd54q3mcbo3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.solodev.shoppingAdminPanel"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
