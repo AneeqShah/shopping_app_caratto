@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/widgets/custom_image_container.dart';
 
 class StoryCircle extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
   final function;
   final String? imgUrl;
   final String? title;
+
   const StoryCircle({
     super.key,
     @required this.function,
@@ -15,25 +17,24 @@ class StoryCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     return GestureDetector(
       onTap: function,
       child: Padding(
         padding: const EdgeInsets.only(right: 14),
         child: Stack(
           children: [
-            SizedBox(
-              width: screenWidth / 5,
-              height: screenHeight / 6,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: CachedNetworkImage(
-                  imageUrl: imgUrl!,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            CustomImageContainer(height: screenHeight / 6,
+                wight: screenWidth / 5,
+                radius: 5,
+                image: imgUrl!),
             Positioned(
               left: 5,
               right: 5,

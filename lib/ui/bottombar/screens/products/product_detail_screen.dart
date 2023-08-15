@@ -30,13 +30,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: const CustomText(
             text: "Product Detail",
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            textColor: Colors.white),
+            textColor: Colors.black),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back , color: Colors.black,)),
         centerTitle: true,
       ),
       body: _getUI(context),
@@ -106,10 +109,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          if (isFav) {
-                            _deleteFav();
+                          if (user != null) {
+                            if (isFav) {
+                              _deleteFav();
+                            } else {
+                              _addToFav();
+                            }
                           } else {
-                            _addToFav();
+                            Fluttertoast.showToast(msg: "Need to login");
                           }
                         },
                         child: Container(
@@ -265,15 +272,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   _checkFav() async {
-    var a = await FirebaseFirestore.instance
-        .collection("favourites")
-        .doc(user!.uid)
-        .collection("products")
-        .doc(widget.productModel["productId"])
-        .get();
-    if (a.exists) {
-      isFav = true;
-      setState(() {});
+    if (user != null) {
+      var a = await FirebaseFirestore.instance
+          .collection("favourites")
+          .doc(user!.uid)
+          .collection("products")
+          .doc(widget.productModel["productId"])
+          .get();
+      if (a.exists) {
+        isFav = true;
+        setState(() {});
+      }
     }
   }
 

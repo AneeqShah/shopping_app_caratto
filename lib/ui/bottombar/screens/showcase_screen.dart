@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/ui/bottombar/screens/story/story_screen.dart';
 import 'package:shopping_app/widgets/banner_card.dart';
 
 import '../../../utils/constants.dart';
@@ -20,6 +21,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
     // TODO: implement initState
     super.initState();
     _getBanners();
+    _getStories();
   }
 
   List<DocumentSnapshot> filterList = [];
@@ -62,13 +64,22 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
               height: 100,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: 2,
+                itemCount: allStories.length,
                 itemBuilder: ((context, index) {
                   return StoryCircle(
-                    function: () {},
+                    function: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => StoryScreen(
+                            stories: allStories[index],
+                          ),
+                        ),
+                      );
+                    },
                     imgUrl:
-                        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-                    title: "Test add",
+                        allStories[index]["imageUrl"],
+                    title: allStories[index]["title"],
                   );
                 }),
               ),
@@ -108,6 +119,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
   }
 
   List<DocumentSnapshot> allBanners = [];
+  List<DocumentSnapshot> allStories = [];
 
   _getBanners() {
     FirebaseFirestore.instance
@@ -132,4 +144,18 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       }
     }
   }
+
+  _getStories(){
+    FirebaseFirestore.instance
+        .collection("status")
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      allStories.clear();
+      for (var element in snapshot.docs) {
+        allStories.add(element);
+        setState(() {});
+      }
+    });
+  }
+
 }
