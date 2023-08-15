@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopping_app/utils/constants.dart';
 import 'package:shopping_app/widgets/custom_button.dart';
 import 'package:shopping_app/widgets/custom_image_container.dart';
@@ -14,6 +17,15 @@ class ProductDetailScreen extends StatefulWidget {
 }
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  bool isFav = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _checkFav();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,23 +104,37 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        height: 45,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: primaryColor)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.favorite_border),
-                            CustomText(
-                                text: "To Favourite",
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                textColor: Colors.black)
-                          ],
+                      child: InkWell(
+                        onTap: () {
+                          if (isFav) {
+                            _deleteFav();
+                          } else {
+                            _addToFav();
+                          }
+                        },
+                        child: Container(
+                          height: 45,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: primaryColor)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                  isFav
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color: isFav ? Colors.red : Colors.grey),
+                              10.width,
+                              CustomText(
+                                  text: isFav ? "Remove" : "To Favourite",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: Colors.black)
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -219,5 +245,48 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             textColor: Colors.black),
       ],
     );
+  }
+
+  User? user = FirebaseAuth.instance.currentUser;
+
+  _addToFav() {
+    FirebaseFirestore.instance
+        .collection("favourites")
+        .doc(user!.uid)
+        .collection("products")
+        .doc(widget.productModel["productId"])
+        .set({
+      'producdID': widget.productModel["productId"],
+      'uid': user!.uid,
+    }).then((value) {
+      isFav = true;
+      setState(() {});
+    });
+  }
+
+  _checkFav() async {
+    var a = await FirebaseFirestore.instance
+        .collection("favourites")
+        .doc(user!.uid)
+        .collection("products")
+        .doc(widget.productModel["productId"])
+        .get();
+    if (a.exists) {
+      isFav = true;
+      setState(() {});
+    }
+  }
+
+  _deleteFav() async {
+    await FirebaseFirestore.instance
+        .collection("favourites")
+        .doc(user!.uid)
+        .collection("products")
+        .doc(widget.productModel["productId"])
+        .delete()
+        .then((value) {
+      isFav = false;
+      setState(() {});
+    });
   }
 }
