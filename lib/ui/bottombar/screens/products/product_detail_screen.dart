@@ -18,6 +18,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool isFav = false;
+  String selectedSize = "";
 
   @override
   void initState() {
@@ -37,9 +38,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             fontSize: 16,
             fontWeight: FontWeight.bold,
             textColor: Colors.black),
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back , color: Colors.black,)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
         centerTitle: true,
       ),
       body: _getUI(context),
@@ -77,7 +83,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             textColor: Colors.black)
-                        : SizedBox(),
+                        : const SizedBox(),
                     const SizedBox(
                       width: 10,
                     ),
@@ -97,12 +103,53 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     hight: 50,
                     width: double.infinity,
                     radius: 6,
-                    text: "Select Size",
+                    text: selectedSize == ""
+                        ? "Select Available Size"
+                        : "Size Selected",
                     size: 14,
                     textColor: Colors.white,
                     fontWeight: FontWeight.w500,
                     buttonColor: Colors.grey.shade700,
-                    onTap: () {}),
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            List availableSize =
+                                widget.productModel["availability"];
+                            return ListView.builder(
+                                itemCount: availableSize.length,
+                                itemBuilder: (context, i) {
+                                  return StatefulBuilder(
+                                      builder: (context, StateSetter setState) {
+                                    return InkWell(
+                                      onTap: () {
+                                        selectedSize = availableSize[i];
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                      },
+                                      child: Column(
+                                        children: [
+                                          ListTile(
+                                            title: Text(availableSize[i]),
+                                            trailing:
+                                                selectedSize == availableSize[i]
+                                                    ? const Icon(
+                                                        Icons.check,
+                                                        color: Colors.blue,
+                                                      )
+                                                    : const SizedBox(
+                                                        width: 10,
+                                                        height: 10,
+                                                      ),
+                                          ),
+                                          const Divider(),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                                });
+                          });
+                    }),
                 20.height,
                 Row(
                   children: [
@@ -147,45 +194,57 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     20.width,
                     Expanded(
-                      child: Container(
-                        height: 45,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Icons.shopping_cart_outlined,
-                              color: Colors.white,
-                            ),
-                            CustomText(
-                                text: "add to Cart",
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                                textColor: Colors.white)
-                          ],
+                      child: InkWell(
+                        onTap: () {
+                          _addToCart();
+                        },
+                        child: Container(
+                          height: 45,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: primaryColor,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.shopping_cart_outlined,
+                                color: Colors.white,
+                              ),
+                              CustomText(
+                                  text: "add to Cart",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  textColor: Colors.white)
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                Divider(),
+                const Divider(),
                 deliveryInfo("7 days"),
-                Divider(),
+                const Divider(),
                 _row("Metal", widget.productModel["metal"]),
                 10.height,
-                _row("Style", widget.productModel["mainStone"]),
+                _row("Style", widget.productModel["style"]),
                 10.height,
                 _row("Brand", widget.productModel["brand"]),
                 10.height,
                 _row("Collection", widget.productModel["collection"]),
                 10.height,
-                _row("Metal Code", "999"),
+                _row("Metal Code", widget.productModel["metalCode"].toString()),
                 10.height,
                 _row("Size", widget.productModel["size"].toString()),
+                10.height,
+                _row("Gender", widget.productModel["gender"].toString()),
+                10.height,
+                _row("MainStone", widget.productModel["mainStone"].toString()),
+                10.height,
+                _row("Metal Color",
+                    widget.productModel["metalColor"].toString()),
                 10.height,
                 const CustomText(
                     text: "Description",
@@ -209,7 +268,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return ListTile(
       leading: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           Icon(
             Icons.delivery_dining,
             size: 34,
@@ -219,18 +278,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       title: Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Text(
-          'Delivery by courier (with fitting)',
+          'Delivery by courier',
           style: Theme.of(context).textTheme.bodyLarge,
         ),
       ),
       subtitle: Text(
-        'Delivery in $arrivalDate',
+        'Delivery in ${widget.productModel['deliveryDate']}',
         style: Theme.of(context).textTheme.titleMedium,
       ),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Free'),
+          Text("\$${widget.productModel['deliveryCharges']}"),
         ],
       ),
     );
@@ -297,5 +356,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       isFav = false;
       setState(() {});
     });
+  }
+
+  _addToCart() {
+    print(selectedSize);
   }
 }
