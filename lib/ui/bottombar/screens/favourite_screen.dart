@@ -47,7 +47,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 1 / 1.3,
+                            childAspectRatio: 1 / 1.45,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 25),
                     itemCount: myFav.length,

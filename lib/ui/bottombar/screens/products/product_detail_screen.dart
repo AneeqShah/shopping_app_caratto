@@ -196,7 +196,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          _addToCart();
+                          if (user != null) {
+                            _addToCart();
+
+                          } else {
+                            Fluttertoast.showToast(msg: "Need to login");
+                          }
                         },
                         child: Container(
                           height: 45,
@@ -358,7 +363,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     });
   }
 
-  _addToCart() {
-    print(selectedSize);
+  _addToCart() async {
+    await FirebaseFirestore.instance
+        .collection("cart")
+        .doc(user!.uid)
+        .collection("items")
+        .doc(widget.productModel["productId"])
+        .set({
+      "productID": widget.productModel["productId"],
+      "size": selectedSize,
+    }).then((value) {
+      Fluttertoast.showToast(msg: "Added to Cart");
+    });
   }
 }

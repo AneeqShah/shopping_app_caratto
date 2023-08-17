@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopping_app/ui/auth_screen/phone_screen.dart';
 import 'package:shopping_app/ui/bottombar/bottom_bar_screen.dart';
+import 'package:shopping_app/ui/bottombar/screens/userInformation/user_information.dart';
 import 'package:shopping_app/widgets/custom_button.dart';
 
 import '../../../navigation/navigation_helper.dart';
@@ -153,10 +155,25 @@ class _AccountScreenState extends State<AccountScreen> {
               context,
             ),
             _buildDivider(),
-            _buildListTile(
-              'My information',
-              Icons.contact_mail_sharp,
-              context,
+            InkWell(
+              onTap: () {
+                if (uid != null) {
+                  NavigationHelper.navPush(
+                      context,
+                      UserInformation(
+                        name: name,
+                        phone: phone,
+                        email: email,
+                      ));
+                } else {
+                  Fluttertoast.showToast(msg: "Need to login");
+                }
+              },
+              child: _buildListTile(
+                'My information',
+                Icons.contact_mail_sharp,
+                context,
+              ),
             ),
             _buildDivider(),
             _buildListTile(
