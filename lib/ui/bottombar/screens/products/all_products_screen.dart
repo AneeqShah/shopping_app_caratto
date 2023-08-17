@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shopping_app/navigation/navigation_helper.dart';
 import 'package:shopping_app/ui/bottombar/screens/products/product_detail_screen.dart';
 import 'package:shopping_app/widgets/custom_product_card.dart';
+import 'package:shopping_app/widgets/custom_text.dart';
 
 class AllProductsScreen extends StatefulWidget {
   final String productID;
@@ -27,7 +28,9 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Shop'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: CustomText(text: "Products", fontSize: 16, fontWeight: FontWeight.bold, textColor: Colors.black),
         bottom: PreferredSize(
             preferredSize:
                 Size.fromHeight(MediaQuery.of(context).size.height * 0.07),

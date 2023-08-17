@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/navigation/navigation_helper.dart';
+import 'package:shopping_app/ui/bottombar/screens/bannerCategory/banner_categories.dart';
 import 'package:shopping_app/ui/bottombar/screens/story/story_screen.dart';
 import 'package:shopping_app/widgets/banner_card.dart';
 
@@ -77,8 +79,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                         ),
                       );
                     },
-                    imgUrl:
-                        allStories[index]["imageUrl"],
+                    imgUrl: allStories[index]["imageUrl"],
                     title: allStories[index]["title"],
                   );
                 }),
@@ -93,16 +94,26 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
               itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: BannerCard(
-                      image: filterList.isEmpty
-                          ? allBanners[i]["imageUrl"]
-                          : filterList[i]["imageUrl"],
-                      title: filterList.isEmpty
-                          ? allBanners[i]["bannerName"]
-                          : filterList[i]["bannerName"],
-                      description: filterList.isEmpty
-                          ? allBanners[i]["description"]
-                          : filterList[i]["description"]),
+                  child: InkWell(
+                    onTap: () {
+                      NavigationHelper.navPush(
+                          context,
+                          BannerCategory(
+                              categoryList: filterList.isEmpty
+                                  ? allBanners[i]["categories"]
+                                  : filterList[i]["categories"]));
+                    },
+                    child: BannerCard(
+                        image: filterList.isEmpty
+                            ? allBanners[i]["imageUrl"]
+                            : filterList[i]["imageUrl"],
+                        title: filterList.isEmpty
+                            ? allBanners[i]["bannerName"]
+                            : filterList[i]["bannerName"],
+                        description: filterList.isEmpty
+                            ? allBanners[i]["description"]
+                            : filterList[i]["description"]),
+                  ),
                 );
               },
             ),
@@ -145,7 +156,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
     }
   }
 
-  _getStories(){
+  _getStories() {
     FirebaseFirestore.instance
         .collection("status")
         .snapshots()
@@ -157,5 +168,4 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       }
     });
   }
-
 }
