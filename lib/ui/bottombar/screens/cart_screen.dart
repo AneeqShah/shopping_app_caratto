@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shopping_app/widgets/custom_button.dart';
 import 'package:shopping_app/widgets/custom_image_container.dart';
 
 import '../../../utils/constants.dart';
@@ -18,12 +21,16 @@ class _CartScreenState extends State<CartScreen> {
   List<DocumentSnapshot> cartItems = [];
   List<DocumentSnapshot> allProducts = [];
   List<int> sized = [];
+  List<int> price = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _getCartItem();
+    // Timer(Duration(seconds: 2), () {
+    //   _calculatePrice();
+    // });
   }
 
   @override
@@ -39,6 +46,46 @@ class _CartScreenState extends State<CartScreen> {
             textColor: Colors.black),
         automaticallyImplyLeading: false,
         centerTitle: true,
+      ),
+      bottomNavigationBar: Container(
+        height: 120,
+        /**/
+        width: MediaQuery.of(context).size.width,
+        color: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            children: [
+              10.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CustomText(
+                      text: "Total: ",
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      textColor: Colors.white),
+                  CustomText(
+                      text: "\$${grandTotal}",
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      textColor: Colors.white),
+                ],
+              ),
+              10.height,
+              CustomButton(
+                  hight: 45,
+                  width: double.infinity,
+                  radius: 8,
+                  text: "Go to Checkout",
+                  size: 14,
+                  textColor: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  buttonColor: Colors.grey.shade800,
+                  onTap: () {})
+            ],
+          ),
+        ),
       ),
       backgroundColor: Colors.white,
       body: cartItems.isNotEmpty
@@ -90,7 +137,7 @@ class _CartScreenState extends State<CartScreen> {
                                         textColor: Colors.black),
                                     5.height,
                                     CustomText(
-                                        text: "\$${allProducts[i]["price"]}",
+                                        text: "\$${price[i]}",
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         textColor: Colors.black),
@@ -99,8 +146,13 @@ class _CartScreenState extends State<CartScreen> {
                                       children: [
                                         InkWell(
                                           onTap: () {
-                                            if (sized[i] -1 >= 1) {
+                                            if (sized[i] - 1 >= 1) {
                                               sized[i]--;
+                                              price[i] = int.parse(
+                                                      allProducts[i]["price"]) *
+                                                  sized[i];
+                                              _calculatePrice();
+
                                               setState(() {});
                                             }
                                           },
@@ -125,6 +177,10 @@ class _CartScreenState extends State<CartScreen> {
                                         InkWell(
                                           onTap: () {
                                             sized[i]++;
+                                            price[i] = int.parse(
+                                                    allProducts[i]["price"]) *
+                                                sized[i];
+                                            _calculatePrice();
                                             setState(() {});
                                           },
                                           child: Container(
@@ -192,14 +248,14 @@ class _CartScreenState extends State<CartScreen> {
 
   User? user = FirebaseAuth.instance.currentUser;
 
-  _getCartItem() {
+  _getCartItem() async {
     if (user != null) {
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('cart')
           .doc(user!.uid)
           .collection('items')
           .snapshots()
-          .listen((QuerySnapshot snapshot) {
+          .listen((QuerySnapshot snapshot) async {
         cartItems.clear();
         snapshot.docs.forEach((element) {
           allProducts.clear();
@@ -208,18 +264,38 @@ class _CartScreenState extends State<CartScreen> {
           setState(() {});
         });
         for (var item in cartItems) {
-          FirebaseFirestore.instance
+          await FirebaseFirestore.instance
               .collection('product')
               .where('productId', isEqualTo: item['productID'])
               .snapshots()
               .listen((QuerySnapshot snapshot) {
             snapshot.docs.forEach((element) {
               allProducts.add(element);
+              price.add(int.parse(element["price"]));
+              _calculatePrice();
               setState(() {});
             });
           });
         }
       });
+    }
+  }
+
+  double totalPrice = 0;
+  double grandTotal = 0;
+
+  _calculatePrice() {
+    totalPrice = 0;
+    grandTotal = 0;
+    double mtotal = 0;
+    setState(() {});
+    for (var i = 0; i <= cartItems.length - 1; i++) {
+      mtotal = double.parse(allProducts[i]["price"].toString());
+      totalPrice = mtotal * double.parse(sized[i].toString());
+      setState(() {
+        grandTotal = grandTotal + totalPrice;
+      });
+      print(grandTotal);
     }
   }
 }

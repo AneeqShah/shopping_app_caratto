@@ -49,22 +49,27 @@ class _CategoryScreenState extends State<CategoryScreen> {
         child: Column(
           children: [
             20.height,
-            const CupertinoSearchTextField(),
+            CupertinoSearchTextField(
+              onChanged: (value) {
+                _filter(value);
+                setState(() {});
+              },
+            ),
             10.height,
             Container(
               height: MediaQuery.of(context).size.height * 0.7,
               width: MediaQuery.of(context).size.width,
               child: ListView.builder(
-                  itemCount: allCategory.length,
+                  itemCount:  filterList.isEmpty ? allCategory.length : filterList.length,
                   itemBuilder: (context, i) {
                     return CategoryCard(
-                      title: allCategory[i]["categoryName"],
-                      image: allCategory[i]["imageUrl"],
+                      title: filterList.isEmpty ?allCategory[i]["categoryName"]:filterList[i]["categoryName"],
+                      image: filterList.isEmpty ?allCategory[i]["imageUrl"]:filterList[i]["imageUrl"],
                       onTap: () {
                         NavigationHelper.navPush(
                             context,
-                             AllProductsScreen(
-                              productID: allCategory[i]['categoryId'],
+                            AllProductsScreen(
+                              productID: filterList.isEmpty ?allCategory[i]['categoryId']:filterList[i]["categoryId"],
                             ));
                       },
                     );
@@ -77,6 +82,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   List<DocumentSnapshot> allCategory = [];
+  List<DocumentSnapshot> filterList = [];
 
   _getCategories() {
     FirebaseFirestore.instance
@@ -88,5 +94,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
         setState(() {});
       });
     });
+  }
+
+  _filter(String name) {
+    filterList.clear();
+    for (var item in allCategory) {
+      var title = item['categoryName'].toString().toLowerCase();
+      if (title.toLowerCase().toString().contains(name.toString())) {
+        filterList.add(item);
+        setState(() {});
+      }
+    }
   }
 }
