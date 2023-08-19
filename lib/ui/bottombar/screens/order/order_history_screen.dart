@@ -51,10 +51,12 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
             itemCount: allOrder.length,
             itemBuilder: (context, i) {
               String order = "${allOrder[i]["orderDate"]}";
+              DateTime time =
+                  DateTime.fromMillisecondsSinceEpoch(allOrder[i]["orderDate"]);
               return CustomOrderCard(
                 status: allOrder[i]["status"],
                 orderID: "${order.substring(6)}",
-                orderDate: '123123',
+                orderDate: '${time.day}/${time.month}/${time.year}',
                 quantity: "${allOrder[i]["totalItems"]}",
                 totalPrice: "${allOrder[i]["totalPrice"]}",
                 onTap: () {
