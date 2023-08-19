@@ -308,40 +308,42 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  _orderItems() {
-    loadingTrue();
+  _orderItems() async{
+    // loadingTrue();
     try {
       String orderID = FirebaseFirestore.instance.collection("Orders").doc().id;
-      FirebaseFirestore.instance.collection("Orders").doc(orderID).set({
+     await FirebaseFirestore.instance.collection("Orders").doc(orderID).set({
         'totalPrice': grandTotal,
         'totalItems': allProducts.length,
         "orderID": orderID,
         "orderBy": user!.uid,
         "orderDate": DateTime.now().millisecondsSinceEpoch,
         "status": "Pending"
-      }).then((value) {
+      }).then((value)async {
         for (var i = 0; i <= allProducts.length - 1; i++) {
-          FirebaseFirestore.instance
+         await FirebaseFirestore.instance
               .collection("Orders")
               .doc(orderID)
               .collection("products")
               .doc(allProducts[i]["productId"])
               .set({
             "productID": allProducts[i]["productId"],
+            "productImage": allProducts[i]["imageUrl"],
+            "productName": allProducts[i]["productName"],
             "quantity": sized[i],
             "amount": price[i],
             "size": cartItems[i]["size"]
           });
         }
-      }).then((value) {
-        FirebaseFirestore.instance
+      }).then((value) async{
+       await FirebaseFirestore.instance
             .collection("cart")
             .doc(user!.uid)
             .collection('items')
             .snapshots()
-            .listen((QuerySnapshot snapshot) {
-          snapshot.docs.forEach((element) {
-            FirebaseFirestore.instance
+            .listen((QuerySnapshot snapshot)async {
+          snapshot.docs.forEach((element)async {
+           await FirebaseFirestore.instance
                 .collection("cart")
                 .doc(user!.uid)
                 .collection('items')
@@ -350,7 +352,7 @@ class _CartScreenState extends State<CartScreen> {
           });
         });
       }).then((value) {
-        loadingFalse();
+        // loadingFalse();
         Fluttertoast.showToast(msg: "Order Placed");
         NavigationHelper.navStart(context, BottomBarScreen());
       });

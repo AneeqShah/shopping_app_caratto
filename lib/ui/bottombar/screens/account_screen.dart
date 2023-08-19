@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shopping_app/ui/auth_screen/phone_screen.dart';
 import 'package:shopping_app/ui/bottombar/bottom_bar_screen.dart';
+import 'package:shopping_app/ui/bottombar/screens/order/order_history_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/userInformation/user_information.dart';
 import 'package:shopping_app/widgets/custom_button.dart';
 
@@ -176,10 +177,15 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
             _buildDivider(),
-            _buildListTile(
-              'History of orders',
-              Icons.list_alt_sharp,
-              context,
+            InkWell(
+              onTap: () {
+                NavigationHelper.navPush(context, OrderHistoryScreen());
+              },
+              child: _buildListTile(
+                'History of orders',
+                Icons.list_alt_sharp,
+                context,
+              ),
             ),
             _buildDivider(),
             _buildDivider(),
