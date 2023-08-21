@@ -1,3 +1,4 @@
+import 'package:advstory/advstory.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,12 @@ class ShowCaseScreen extends StatefulWidget {
 }
 
 class _ShowCaseScreenState extends State<ShowCaseScreen> {
+  static String collectionDbName = 'status';
+
+//TODO: add possibility get data from any API
+  CollectionReference dbInstance =
+      FirebaseFirestore.instance.collection(collectionDbName);
+
   @override
   void initState() {
     // TODO: implement initState
@@ -67,29 +74,42 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
               },
             ),
             10.height,
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: allStories.length,
-                itemBuilder: ((context, index) {
-                  return StoryCircle(
-                    function: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => StoryScreen(
-                            stories: allStories[index],
+            allStories.isNotEmpty
+                ? SizedBox(
+                    height: 80,
+                    width: double.infinity,
+                    child: AdvStory(
+                      storyCount: allStories.length,
+                      storyBuilder: (storyIndex) => Story(
+                        contentCount: allStories.length,
+                        contentBuilder: (contentIndex) => ImageContent(
+                          url: allStories[contentIndex]["imageUrl"],
+                          footer: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                    text: allStories[contentIndex]["title"],
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.white),
+                                CustomText(
+                                    text: allStories[contentIndex]
+                                        ["description"],
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal,
+                                    textColor: Colors.white),
+                              ],
+                            ),
                           ),
                         ),
-                      );
-                    },
-                    imgUrl: allStories[index]["imageUrl"],
-                    title: allStories[index]["title"],
-                  );
-                }),
-              ),
-            ),
+                      ),
+                      trayBuilder: (index) =>
+                          AdvStoryTray(url: allStories[index]["imageUrl"]),
+                    ),
+                  )
+                : Container(),
             10.height,
             const CustomText(
                 text: "Popular Products",
@@ -98,7 +118,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                 textColor: Colors.black),
             5.height,
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.35,
+              height: MediaQuery.of(context).size.height * 0.35,
               width: double.infinity,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -106,10 +126,13 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                 itemBuilder: ((context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 20.0),
-                    child:  InkWell(
-                      onTap: (){
+                    child: InkWell(
+                      onTap: () {
                         NavigationHelper.navPush(
-                            context, ProductDetailScreen(productModel: allProducts[index],));
+                            context,
+                            ProductDetailScreen(
+                              productModel: allProducts[index],
+                            ));
                       },
                       child: CustomProductCard(
                         image: allProducts[index]["imageUrl"],
@@ -202,6 +225,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       allStories.clear();
       for (var element in snapshot.docs) {
         allStories.add(element);
+        print(element.data());
         setState(() {});
       }
     });
@@ -222,4 +246,5 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       });
     });
   }
+
 }

@@ -34,9 +34,9 @@ class CustomTextField extends StatelessWidget {
       children: [
         CustomText(
             text: title,
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.normal,
-            textColor: Color(0xff695C5C)),
+            textColor: Colors.black),
         5.height,
         TextFormField(
           cursorColor: primaryColor,
