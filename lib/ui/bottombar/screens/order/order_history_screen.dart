@@ -78,6 +78,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
     FirebaseFirestore.instance
         .collection("Orders")
         .where("orderBy", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .orderBy("orderDate", descending: true)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       snapshot.docs.forEach((element) {

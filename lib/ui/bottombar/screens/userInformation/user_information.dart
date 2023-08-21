@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shopping_app/navigation/navigation_helper.dart';
+import 'package:shopping_app/ui/bottombar/bottom_bar_screen.dart';
 import 'package:shopping_app/utils/constants.dart';
 import 'package:shopping_app/widgets/custom_button.dart';
 import 'package:shopping_app/widgets/custom_text.dart';
@@ -79,10 +84,23 @@ class _UserInformationState extends State<UserInformation> {
                 textColor: Colors.white,
                 fontWeight: FontWeight.bold,
                 buttonColor: primaryColor,
-                onTap: () {})
+                onTap: () {
+                  _updateUser();
+                })
           ],
         ),
       ),
     );
+  }
+
+  _updateUser() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({"name": _name.text, "number": _phone.text},
+            SetOptions(merge: true)).then((value) {
+      Fluttertoast.showToast(msg: "Updated");
+      NavigationHelper.navStart(context, const BottomBarScreen());
+    });
   }
 }

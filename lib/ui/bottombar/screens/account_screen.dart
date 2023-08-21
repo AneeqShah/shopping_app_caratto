@@ -150,12 +150,6 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
             _buildContainerTitle('Personal Area', context),
             _buildDivider(),
-            _buildListTile(
-              'Notification history',
-              Icons.notifications_none_sharp,
-              context,
-            ),
-            _buildDivider(),
             InkWell(
               onTap: () {
                 if (uid != null) {
@@ -187,7 +181,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 context,
               ),
             ),
-            _buildDivider(),
             _buildDivider(),
             _buildContainerTitle('Help', context),
             _buildDivider(),
