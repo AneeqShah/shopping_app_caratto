@@ -27,7 +27,7 @@ class CustomProductCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       child: Container(
         // height: 250,
-        width: MediaQuery.of(context).size.width,
+        width: 220,
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(8)),
         child: Column(

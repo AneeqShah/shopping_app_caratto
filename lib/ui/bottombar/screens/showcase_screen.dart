@@ -3,10 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_app/navigation/navigation_helper.dart';
 import 'package:shopping_app/ui/bottombar/screens/bannerCategory/banner_categories.dart';
+import 'package:shopping_app/ui/bottombar/screens/products/product_detail_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/story/story_screen.dart';
 import 'package:shopping_app/widgets/banner_card.dart';
+import 'package:shopping_app/widgets/custom_text.dart';
 
 import '../../../utils/constants.dart';
+import '../../../widgets/custom_product_card.dart';
 import '../../../widgets/link_button.dart';
 import '../../../widgets/story_card.dart';
 
@@ -24,6 +27,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
     super.initState();
     _getBanners();
     _getStories();
+    _getProducts();
   }
 
   List<DocumentSnapshot> filterList = [];
@@ -53,6 +57,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             10.height,
             CupertinoSearchTextField(
@@ -81,6 +86,39 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     },
                     imgUrl: allStories[index]["imageUrl"],
                     title: allStories[index]["title"],
+                  );
+                }),
+              ),
+            ),
+            10.height,
+            const CustomText(
+                text: "Popular Products",
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black),
+            5.height,
+            SizedBox(
+              height: MediaQuery.of(context).size.height*0.35,
+              width: double.infinity,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: allProducts.length,
+                itemBuilder: ((context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child:  InkWell(
+                      onTap: (){
+                        NavigationHelper.navPush(
+                            context, ProductDetailScreen(productModel: allProducts[index],));
+                      },
+                      child: CustomProductCard(
+                        image: allProducts[index]["imageUrl"],
+                        price: allProducts[index]["price"],
+                        salePrice: allProducts[index]["salePrice"],
+                        sale: allProducts[index]["sale"],
+                        title: allProducts[index]["productName"],
+                      ),
+                    ),
                   );
                 }),
               ),
@@ -166,6 +204,22 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
         allStories.add(element);
         setState(() {});
       }
+    });
+  }
+
+  List<DocumentSnapshot> allProducts = [];
+
+  _getProducts() {
+    FirebaseFirestore.instance
+        .collection("product")
+        .limit(3)
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      allProducts.clear();
+      snapshot.docs.forEach((element) {
+        allProducts.add(element);
+        setState(() {});
+      });
     });
   }
 }

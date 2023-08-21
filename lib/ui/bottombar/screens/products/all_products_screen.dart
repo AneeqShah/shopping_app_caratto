@@ -16,12 +16,13 @@ class AllProductsScreen extends StatefulWidget {
 
 class _AllProductsScreenState extends State<AllProductsScreen> {
   List<DocumentSnapshot> allProducts = [];
+  bool hightToLow = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getProducts();
+    _getProducts(hightToLow);
   }
 
   @override
@@ -29,8 +30,12 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        title: CustomText(text: "Products", fontSize: 16, fontWeight: FontWeight.bold, textColor: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: const CustomText(
+            text: "Products",
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            textColor: Colors.black),
         bottom: PreferredSize(
             preferredSize:
                 Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
@@ -69,13 +74,18 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        // Navigator.of(context).pushNamed(SortScreen.routeName);
+                        print("called $hightToLow");
+                        hightToLow = !hightToLow;
+                        setState(() {});
+                        _getProducts(hightToLow);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Icon(Icons.compare_arrows_sharp),
-                          const Text('Sort by'),
+                          hightToLow
+                              ? const Text('Sort by High to low')
+                              : const Text('Sort by low to High'),
                         ],
                       ),
                     ),
@@ -103,7 +113,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                       return InkWell(
                         onTap: () {
                           NavigationHelper.navPush(
-                              context, ProductDetailScreen(productModel: allProducts[i],));
+                              context,
+                              ProductDetailScreen(
+                                productModel: allProducts[i],
+                              ));
                         },
                         child: CustomProductCard(
                           image: allProducts[i]["imageUrl"],
@@ -133,10 +146,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     );
   }
 
-  _getProducts() {
+  _getProducts(bool high) {
     FirebaseFirestore.instance
         .collection("product")
         .where("categoryID", isEqualTo: widget.productID)
+        .orderBy("price", descending: high)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       allProducts.clear();
