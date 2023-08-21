@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shopping_app/ui/auth_screen/signup_screen.dart';
 import 'package:shopping_app/ui/bottombar/bottom_bar_screen.dart';
 import 'package:shopping_app/utils/input_validators.dart';
 import 'package:shopping_app/widgets/custom_loader.dart';
@@ -151,10 +152,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(10, 8, 9, 0.8)),
-                child: const Text('Register',
+                child: const Text('Login',
                     style: TextStyle(fontSize: 14, color: Colors.white)),
               ),
             ),
+            const SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Don't have an account?"),
+                InkWell(
+                  onTap: () {
+                    NavigationHelper.navPush(context, SignUpScreen());
+                  },
+                  child: Text(
+                    " SignUp",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

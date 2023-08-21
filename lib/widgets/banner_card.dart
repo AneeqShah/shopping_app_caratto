@@ -15,12 +15,16 @@ class BannerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
+          SizedBox(
+            height: 200,
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              child: Image.network(image , fit: BoxFit.cover,),
             ),
-            child: Image.network(image),
           ),
           Padding(
             padding: const EdgeInsets.all(20),
@@ -40,7 +44,7 @@ class BannerCard extends StatelessWidget {
                 Text(
                   description,
                   softWrap: true,
-                  overflow: TextOverflow.fade,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(fontWeight: FontWeight.w300),
                 ),
               ],

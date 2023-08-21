@@ -11,9 +11,8 @@ import 'package:shopping_app/widgets/custom_loader.dart';
 import '../../navigation/navigation_helper.dart';
 
 class SignUpScreen extends StatefulWidget {
-  final String number;
 
-  const SignUpScreen({super.key, required this.number});
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -29,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _errorTextFieldColor = const Color.fromARGB(255, 255, 117, 107);
   final TextEditingController _date = TextEditingController();
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController password = TextEditingController();
   String _currentOption = genderOptions[0];
@@ -202,12 +202,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     style: Theme.of(context).textTheme.bodyMedium,
                     cursorColor: Colors.black,
+                    controller: _phone,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Phone number',
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 10.0),
+                      filled: true,
+                      fillColor: _textFieldColor,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _textFieldColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _textFieldColor),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _errorTextFieldColor),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _errorTextFieldColor),
+                      ),
+                    ),
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_emailFocusNode);
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter phone number.';
+                      }
+
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    cursorColor: Colors.black,
                     controller: password,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Enter password',
                       contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 10.0),
+                      const EdgeInsets.symmetric(horizontal: 10.0),
                       filled: true,
                       fillColor: _textFieldColor,
                       enabledBorder: OutlineInputBorder(
@@ -304,7 +343,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .then((value) {
         String uid = FirebaseAuth.instance.currentUser!.uid;
         FirebaseFirestore.instance.collection("users").doc(uid).set({
-          'number': widget.number,
+          'number': _phone.text,
           'email': _email.text,
           'name': _name.text,
           'dateOfJoining': _date.text,

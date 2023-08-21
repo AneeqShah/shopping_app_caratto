@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -123,11 +124,35 @@ class _CartScreenState extends State<CartScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CustomImageContainer(
-                                      height: 130,
-                                      wight: 130,
-                                      radius: 8,
-                                      image: allProducts[i]["imageUrl"]),
+                                  Stack(
+                                    children: [
+                                      CustomImageContainer(
+                                          height: 130,
+                                          wight: 130,
+                                          radius: 8,
+                                          image: allProducts[i]["imageUrl"]),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () async {
+                                          await FirebaseFirestore.instance
+                                              .collection("cart")
+                                              .doc(user!.uid)
+                                              .collection("items")
+                                              .doc(allProducts[i]["productId"])
+                                              .delete()
+                                              .then((value) {
+                                            allProducts.removeAt(i);
+                                            setState(() {});
+                                            Fluttertoast.showToast(
+                                                msg: "Deleted");
+                                          });
+                                        },
+                                      )
+                                    ],
+                                  ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -267,6 +292,8 @@ class _CartScreenState extends State<CartScreen> {
           .snapshots()
           .listen((QuerySnapshot snapshot) async {
         cartItems.clear();
+        sized.clear();
+        price.clear();
         snapshot.docs.forEach((element) {
           allProducts.clear();
           cartItems.add(element);
@@ -308,20 +335,20 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  _orderItems() async{
+  _orderItems() async {
     // loadingTrue();
     try {
       String orderID = FirebaseFirestore.instance.collection("Orders").doc().id;
-     await FirebaseFirestore.instance.collection("Orders").doc(orderID).set({
+      await FirebaseFirestore.instance.collection("Orders").doc(orderID).set({
         'totalPrice': grandTotal,
         'totalItems': allProducts.length,
         "orderID": orderID,
         "orderBy": user!.uid,
         "orderDate": DateTime.now().millisecondsSinceEpoch,
         "status": "Pending"
-      }).then((value)async {
+      }).then((value) async {
         for (var i = 0; i <= allProducts.length - 1; i++) {
-         await FirebaseFirestore.instance
+          await FirebaseFirestore.instance
               .collection("Orders")
               .doc(orderID)
               .collection("products")
@@ -335,15 +362,15 @@ class _CartScreenState extends State<CartScreen> {
             "size": cartItems[i]["size"]
           });
         }
-      }).then((value) async{
-       await FirebaseFirestore.instance
+      }).then((value) async {
+        await FirebaseFirestore.instance
             .collection("cart")
             .doc(user!.uid)
             .collection('items')
             .snapshots()
-            .listen((QuerySnapshot snapshot)async {
-          snapshot.docs.forEach((element)async {
-           await FirebaseFirestore.instance
+            .listen((QuerySnapshot snapshot) async {
+          snapshot.docs.forEach((element) async {
+            await FirebaseFirestore.instance
                 .collection("cart")
                 .doc(user!.uid)
                 .collection('items')

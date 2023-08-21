@@ -8,7 +8,7 @@ import '../../../../widgets/category_card.dart';
 import '../products/all_products_screen.dart';
 
 class BannerCategory extends StatefulWidget {
-  final List categoryList;
+  final String categoryList;
 
   const BannerCategory({super.key, required this.categoryList});
 
@@ -41,7 +41,7 @@ class _BannerCategoryState extends State<BannerCategory> {
           ),
         ),
         title: const Text(
-          "Categories",
+          "Category",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
@@ -88,13 +88,13 @@ class _BannerCategoryState extends State<BannerCategory> {
   List<DocumentSnapshot> allCategory = [];
 
   _getCategories() async {
-    for (var item in widget.categoryList) {
+
       var a = await FirebaseFirestore.instance
           .collection("category")
-          .doc(item)
+          .doc(widget.categoryList)
           .get();
       allCategory.add(a);
       setState(() {});
-    }
+
   }
 }

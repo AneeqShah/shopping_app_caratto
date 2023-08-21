@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shopping_app/ui/auth_screen/phone_screen.dart';
+import 'package:shopping_app/ui/auth_screen/login_screen.dart';
 import 'package:shopping_app/ui/bottombar/bottom_bar_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/order/order_history_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/userInformation/user_information.dart';
@@ -136,7 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          NavigationHelper.navPush(context, PhoneScreen());
+                          NavigationHelper.navPush(context, LoginScreen());
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor:
