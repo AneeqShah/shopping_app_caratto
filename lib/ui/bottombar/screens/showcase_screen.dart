@@ -79,9 +79,9 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     height: 80,
                     width: double.infinity,
                     child: AdvStory(
-                      storyCount: allStories.length,
+                      storyCount: allStories.length-1,
                       storyBuilder: (storyIndex) => Story(
-                        contentCount: allStories.length,
+                        contentCount: allStories.length ,
                         contentBuilder: (contentIndex) => ImageContent(
                           url: allStories[contentIndex]["imageUrl"],
                           footer: Padding(
@@ -110,42 +110,8 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     ),
                   )
                 : Container(),
-            10.height,
-            const CustomText(
-                text: "Popular Products",
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                textColor: Colors.black),
+
             5.height,
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.35,
-              width: double.infinity,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: allProducts.length,
-                itemBuilder: ((context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: InkWell(
-                      onTap: () {
-                        NavigationHelper.navPush(
-                            context,
-                            ProductDetailScreen(
-                              productModel: allProducts[index],
-                            ));
-                      },
-                      child: CustomProductCard(
-                        image: allProducts[index]["imageUrl"],
-                        price: allProducts[index]["price"],
-                        salePrice: allProducts[index]["salePrice"],
-                        sale: allProducts[index]["sale"],
-                        title: allProducts[index]["productName"],
-                      ),
-                    ),
-                  );
-                }),
-              ),
-            ),
             const SizedBox(height: 10),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -179,11 +145,49 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
               },
             ),
             const SizedBox(height: 10),
+
             LinkButton('About the sky in diamonds'),
             const SizedBox(height: 10),
             LinkButton('Contract offer'),
             const SizedBox(height: 10),
             LinkButton('Delivery terms'),
+            const CustomText(
+                text: "Popular Products",
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black),
+            10.height,
+
+            Container(
+              height: 500,
+              width: double.infinity,
+              child: GridView.builder(
+                  gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1 / 1.5,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 25),
+                  itemCount: allProducts.length,
+                  itemBuilder: (context, i) {
+                    return InkWell(
+                      onTap: () {
+                        NavigationHelper.navPush(
+                            context,
+                            ProductDetailScreen(
+                              productModel: allProducts[i],
+                            ));
+                      },
+                      child: CustomProductCard(
+                        image: allProducts[i]["imageUrl"],
+                        price: allProducts[i]["price"],
+                        salePrice: allProducts[i]["salePrice"],
+                        sale: allProducts[i]["sale"],
+                        title: allProducts[i]["productName"],
+                      ),
+                    );
+                  }),
+            ),
           ],
         ),
       ),

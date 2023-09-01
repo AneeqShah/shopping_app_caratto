@@ -7,6 +7,8 @@ import 'package:shopping_app/widgets/custom_button.dart';
 import 'package:shopping_app/widgets/custom_image_container.dart';
 import 'package:shopping_app/widgets/custom_text.dart';
 
+import '../../../../widgets/scroll_wheel_tile.dart';
+
 class ProductDetailScreen extends StatefulWidget {
   var productModel;
 
@@ -19,6 +21,7 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool isFav = false;
   String selectedSize = "";
+  List allSizes = [];
 
   @override
   void initState() {
@@ -105,50 +108,122 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     radius: 6,
                     text: selectedSize == ""
                         ? "Select Available Size"
-                        : "Size Selected",
+                        : "Size Selected ${selectedSize}",
                     size: 14,
                     textColor: Colors.white,
                     fontWeight: FontWeight.w500,
                     buttonColor: Colors.grey.shade700,
                     onTap: () {
+                      allSizes = widget.productModel["size"];
+                      setState(() {});
                       showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            List availableSize =
-                                widget.productModel["availability"];
-                            return ListView.builder(
-                                itemCount: availableSize.length,
-                                itemBuilder: (context, i) {
-                                  return StatefulBuilder(
-                                      builder: (context, StateSetter setState) {
-                                    return InkWell(
-                                      onTap: () {
-                                        selectedSize = availableSize[i];
-                                        setState(() {});
-                                        Navigator.pop(context);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          ListTile(
-                                            title: Text(availableSize[i]),
-                                            trailing:
-                                                selectedSize == availableSize[i]
-                                                    ? const Icon(
-                                                        Icons.check,
-                                                        color: Colors.blue,
-                                                      )
-                                                    : const SizedBox(
-                                                        width: 10,
-                                                        height: 10,
-                                                      ),
+                        isScrollControlled: true,
+                        backgroundColor:
+                            const Color.fromARGB(255, 225, 225, 225),
+                        context: context,
+                        builder: (ctx) => Wrap(
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  color:
+                                      const Color.fromARGB(255, 211, 211, 211),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        child: TextButton(
+                                          onPressed: () {
+                                            Navigator.of(ctx).pop();
+                                          },
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                          const Divider(),
-                                        ],
+                                        ),
                                       ),
-                                    );
-                                  });
-                                });
-                          });
+                                      const Expanded(
+                                          child: Text(
+                                        'Size / Availability',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      )),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: const Text(
+                                          'Choose',
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                  child: ListView.builder(
+                                      itemCount: allSizes.length,
+                                      itemBuilder: (context, i) {
+                                        return InkWell(
+                                          onTap: () {
+                                            selectedSize = allSizes[i]["size"];
+                                            setState(() {});
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            height: 50,
+                                            width: double.infinity,
+                                            decoration: BoxDecoration(
+                                                border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors
+                                                            .grey.shade200))),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  CustomText(
+                                                      text: allSizes[i]["size"],
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      textColor: Colors.black),
+                                                  CustomText(
+                                                      text:
+                                                          "In Stock: ${allSizes[i]["inStock"]}",
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      textColor: Colors.black)
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
                     }),
                 20.height,
                 Row(
@@ -198,7 +273,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         onTap: () {
                           if (user != null) {
                             _addToCart();
-
                           } else {
                             Fluttertoast.showToast(msg: "Need to login");
                           }
@@ -242,8 +316,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 10.height,
                 _row("Metal Code", widget.productModel["metalCode"].toString()),
                 10.height,
-                _row("Size", widget.productModel["size"].toString()),
-                10.height,
+                // _row("Size", widget.productModel["size"][0]["size"].toString()),
+                // 10.height,
                 _row("Gender", widget.productModel["gender"].toString()),
                 10.height,
                 _row("MainStone", widget.productModel["mainStone"].toString()),

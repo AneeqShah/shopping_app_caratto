@@ -173,7 +173,11 @@ class _AccountScreenState extends State<AccountScreen> {
             _buildDivider(),
             InkWell(
               onTap: () {
-                NavigationHelper.navPush(context, OrderHistoryScreen());
+                if (uid != null) {
+                  NavigationHelper.navPush(context, OrderHistoryScreen());
+                } else {
+                  Fluttertoast.showToast(msg: "Need to login");
+                }
               },
               child: _buildListTile(
                 'History of orders',
