@@ -44,37 +44,36 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          right: BorderSide(
-                            color: Colors.black,
-                            width: 1.0,
-                          ),
-                        ),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context)
-                          //     .pushNamed(FiltersScreen.routeName);
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.filter_alt),
-                            const Text('Filters'),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   flex: 1,
+                  //   child: Container(
+                  //     decoration: const BoxDecoration(
+                  //       border: Border(
+                  //         right: BorderSide(
+                  //           color: Colors.black,
+                  //           width: 1.0,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     child: GestureDetector(
+                  //       onTap: () {
+                  //         // Navigator.of(context)
+                  //         //     .pushNamed(FiltersScreen.routeName);
+                  //       },
+                  //       child: const Row(
+                  //         mainAxisAlignment: MainAxisAlignment.center,
+                  //         children: [
+                  //           Icon(Icons.filter_alt),
+                  //           Text('Filter by'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        print("called $hightToLow");
                         hightToLow = !hightToLow;
                         setState(() {});
                         _getProducts(hightToLow);

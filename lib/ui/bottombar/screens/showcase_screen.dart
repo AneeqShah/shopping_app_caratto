@@ -79,7 +79,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     height: 80,
                     width: double.infinity,
                     child: AdvStory(
-                      storyCount: allStories.length-1,
+                      storyCount: allStories.length - (allStories.length - 1),
                       storyBuilder: (storyIndex) => Story(
                         contentCount: allStories.length ,
                         contentBuilder: (contentIndex) => ImageContent(
