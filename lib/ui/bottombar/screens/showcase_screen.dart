@@ -81,7 +81,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     child: AdvStory(
                       storyCount: allStories.length - (allStories.length - 1),
                       storyBuilder: (storyIndex) => Story(
-                        contentCount: allStories.length ,
+                        contentCount: allStories.length,
                         contentBuilder: (contentIndex) => ImageContent(
                           url: allStories[contentIndex]["imageUrl"],
                           footer: Padding(
@@ -110,7 +110,6 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     ),
                   )
                 : Container(),
-
             5.height,
             const SizedBox(height: 10),
             ListView.builder(
@@ -145,7 +144,6 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
               },
             ),
             const SizedBox(height: 10),
-
             LinkButton('About the sky in diamonds'),
             const SizedBox(height: 10),
             LinkButton('Contract offer'),
@@ -157,15 +155,13 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                 fontWeight: FontWeight.w600,
                 textColor: Colors.black),
             10.height,
-
             Container(
               height: 500,
               width: double.infinity,
               child: GridView.builder(
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 1 / 1.5,
+                      mainAxisExtent: 250,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 25),
                   itemCount: allProducts.length,
@@ -250,5 +246,4 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
       });
     });
   }
-
 }

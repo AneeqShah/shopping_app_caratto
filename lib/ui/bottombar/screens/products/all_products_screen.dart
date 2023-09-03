@@ -101,11 +101,13 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: GridView.builder(
+                    shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 1 / 1.45,
                             crossAxisSpacing: 10,
+                            mainAxisExtent:
+                                250,
                             mainAxisSpacing: 25),
                     itemCount: allProducts.length,
                     itemBuilder: (context, i) {

@@ -26,7 +26,7 @@ class CustomProductCard extends StatelessWidget {
       shadowColor: Colors.grey,
       borderRadius: BorderRadius.circular(8),
       child: Container(
-        // height: 250,
+        height: 250,
         width: 220,
         decoration: BoxDecoration(
             color: Colors.white, borderRadius: BorderRadius.circular(8)),
