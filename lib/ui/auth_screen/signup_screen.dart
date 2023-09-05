@@ -31,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phone = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController password = TextEditingController();
+  final TextEditingController confirmPassword = TextEditingController();
   String _currentOption = genderOptions[0];
 
   @override
@@ -276,6 +277,52 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       if (value.length <= 5) {
                         return 'Password must be 6 digits .';
                       }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    cursorColor: Colors.black,
+                    controller: confirmPassword,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: 'Confirm password',
+                      contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 10.0),
+                      filled: true,
+                      fillColor: _textFieldColor,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _textFieldColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _textFieldColor),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _errorTextFieldColor),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        borderSide: BorderSide(color: _errorTextFieldColor),
+                      ),
+                    ),
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_emailFocusNode);
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Enter confirm Password.';
+                      }
+                      if (value.length <= 5) {
+                        return 'Password must be 6 digits .';
+                      }
+                      if(password.text.trim() != confirmPassword.text.trim()){
+                        return "Password not match";
+                      }
+
                       return null;
                     },
                   ),
