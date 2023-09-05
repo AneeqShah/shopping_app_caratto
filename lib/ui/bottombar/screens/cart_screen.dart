@@ -129,8 +129,7 @@ class _CartScreenState extends State<CartScreen> {
                                 const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Stack(
                                   children: [
@@ -165,11 +164,16 @@ class _CartScreenState extends State<CartScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    CustomText(
-                                        text: allProducts[i]["productName"],
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        textColor: Colors.black),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: CustomText(
+                                          text: allProducts[i]["productName"],
+                                          fontSize: 14,
+                                          overflow: TextOverflow.ellipsis,
+                                          fontWeight: FontWeight.bold,
+                                          textColor: Colors.black),
+                                    ),
                                     5.height,
                                     CustomText(
                                         text: "Size ${cartItems[i]["size"]}",
@@ -190,8 +194,7 @@ class _CartScreenState extends State<CartScreen> {
                                             if (sized[i] - 1 >= 1) {
                                               sized[i]--;
                                               price[i] = int.parse(
-                                                      allProducts[i]
-                                                          ["price"]) *
+                                                      allProducts[i]["price"]) *
                                                   sized[i];
                                               _calculatePrice();
 
@@ -341,6 +344,4 @@ class _CartScreenState extends State<CartScreen> {
       });
     }
   }
-
-
 }

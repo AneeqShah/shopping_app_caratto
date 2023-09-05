@@ -19,6 +19,9 @@ class AllProductsScreen extends StatefulWidget {
 class _AllProductsScreenState extends State<AllProductsScreen> {
   List<DocumentSnapshot> allProducts = [];
   bool hightToLow = false;
+  bool isFilter = false;
+  bool male = false;
+  bool female = false;
 
   @override
   void initState() {
@@ -48,6 +51,32 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                 children: [
                   Expanded(
                     flex: 1,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          isFilter = !isFilter;
+                          setState(() {});
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.filter_alt),
+                            Text('Filter by'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
                     child: GestureDetector(
                       onTap: () {
                         hightToLow = !hightToLow;
@@ -70,66 +99,162 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
             )),
       ),
       body: allProducts.isNotEmpty
-          ? Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 50,
-                    child: CupertinoSearchTextField(
-                      onChanged: (value) {
-                        _filter(value);
-                        setState(() {});
-                      },
-                    ),
+          ? Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        child: CupertinoSearchTextField(
+                          onChanged: (value) {
+                            _filter(value);
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      10.height,
+                      Expanded(
+                        child: GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisExtent: 250,
+                                    mainAxisSpacing: 25),
+                            itemCount: filterList.isNotEmpty
+                                ? filterList.length
+                                : allProducts.length,
+                            itemBuilder: (context, i) {
+                              return InkWell(
+                                onTap: () {
+                                  NavigationHelper.navPush(
+                                      context,
+                                      ProductDetailScreen(
+                                        productModel: filterList.isNotEmpty
+                                            ? filterList[i]
+                                            : allProducts[i],
+                                      ));
+                                },
+                                child: CustomProductCard(
+                                  image: filterList.isNotEmpty
+                                      ? filterList[i]["imageUrl"]
+                                      : allProducts[i]["imageUrl"],
+                                  price: filterList.isNotEmpty
+                                      ? filterList[i]["price"]
+                                      : allProducts[i]["price"],
+                                  salePrice: filterList.isNotEmpty
+                                      ? filterList[i]["salePrice"]
+                                      : allProducts[i]["salePrice"],
+                                  sale: filterList.isNotEmpty
+                                      ? filterList[i]["sale"]
+                                      : allProducts[i]["sale"],
+                                  title: filterList.isNotEmpty
+                                      ? filterList[i]["productName"]
+                                      : allProducts[i]["productName"],
+                                ),
+                              );
+                            }),
+                      ),
+                    ],
                   ),
-                  10.height,
-                  Expanded(
-                    child: GridView.builder(
-                        shrinkWrap: true,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisExtent: 250,
-                                mainAxisSpacing: 25),
-                        itemCount: filterList.isNotEmpty
-                            ? filterList.length
-                            : allProducts.length,
-                        itemBuilder: (context, i) {
-                          return InkWell(
-                            onTap: () {
-                              NavigationHelper.navPush(
-                                  context,
-                                  ProductDetailScreen(
-                                    productModel: filterList.isNotEmpty
-                                        ? filterList[i]
-                                        : allProducts[i],
-                                  ));
-                            },
-                            child: CustomProductCard(
-                              image: filterList.isNotEmpty
-                                  ? filterList[i]["imageUrl"]
-                                  : allProducts[i]["imageUrl"],
-                              price: filterList.isNotEmpty
-                                  ? filterList[i]["price"]
-                                  : allProducts[i]["price"],
-                              salePrice: filterList.isNotEmpty
-                                  ? filterList[i]["salePrice"]
-                                  : allProducts[i]["salePrice"],
-                              sale: filterList.isNotEmpty
-                                  ? filterList[i]["sale"]
-                                  : allProducts[i]["sale"],
-                              title: filterList.isNotEmpty
-                                  ? filterList[i]["productName"]
-                                  : allProducts[i]["productName"],
-                            ),
-                          );
-                        }),
-                  ),
-                ],
-              ),
+                ),
+                isFilter
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          height: 200,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const CustomText(
+                                  text: "Filter by Gender",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  textColor: Colors.black),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const CustomText(
+                                      text: "Male",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      textColor: Colors.black),
+                                  Checkbox(
+                                    value: male,
+                                    onChanged: (val) {
+                                      male = val!;
+                                      female = !val;
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const CustomText(
+                                      text: "Female",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      textColor: Colors.black),
+                                  Checkbox(
+                                    value: female,
+                                    onChanged: (val) {
+                                      male = !val!;
+                                      female = val;
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        _getFilter();
+                                        isFilter = false;
+                                        setState(() {});
+                                      },
+                                      child: const CustomText(
+                                          text: "Apply",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          textColor: Colors.white)),
+                                  20.width,
+                                  InkWell(
+                                    onTap: () {
+                                      _getProducts(false);
+                                      isFilter = false;
+                                      setState(() {});
+                                    },
+                                    child: CustomText(
+                                        text: "Reset",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        textColor: primaryColor),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -174,5 +299,21 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         setState(() {});
       }
     }
+  }
+
+  _getFilter() {
+    allProducts.clear();
+    FirebaseFirestore.instance
+        .collection("product")
+        .where("categoryID", isEqualTo: widget.productID)
+        .where("gender", isEqualTo: male ? "Male" : "Female")
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      allProducts.clear();
+      snapshot.docs.forEach((element) {
+        allProducts.add(element);
+        setState(() {});
+      });
+    });
   }
 }
