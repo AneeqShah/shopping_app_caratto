@@ -53,6 +53,7 @@ class CustomProductCard extends StatelessWidget {
                       ? CustomText(
                           text: "$salePrice\$",
                           fontSize: 16,
+                          overflow: TextOverflow.ellipsis,
                           fontWeight: FontWeight.bold,
                           textColor: Colors.black)
                       : Container()
@@ -65,6 +66,7 @@ class CustomProductCard extends StatelessWidget {
               child: CustomText(
                   text: title,
                   fontSize: 16,
+                  overflow: TextOverflow.ellipsis,
                   fontWeight: FontWeight.normal,
                   textColor: Colors.black38),
             ),

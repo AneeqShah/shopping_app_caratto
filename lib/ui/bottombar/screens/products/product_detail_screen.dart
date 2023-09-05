@@ -7,6 +7,8 @@ import 'package:shopping_app/widgets/custom_button.dart';
 import 'package:shopping_app/widgets/custom_image_container.dart';
 import 'package:shopping_app/widgets/custom_text.dart';
 
+import '../../../../navigation/navigation_helper.dart';
+import '../../../../widgets/custom_product_card.dart';
 import '../../../../widgets/scroll_wheel_tile.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -28,6 +30,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     // TODO: implement initState
     super.initState();
     _checkFav();
+    _getProducts();
   }
 
   @override
@@ -334,7 +337,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     text: widget.productModel["description"],
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
-                    textColor: Colors.black)
+                    textColor: Colors.black),
+                10.height,
+                const CustomText(
+                    text: "Related Products",
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    textColor: Colors.black),
+                10.height,
+                Container(
+                  height: 250,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                      itemCount: allProducts.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, i) {
+                        return InkWell(
+                          onTap: () {
+                            NavigationHelper.navPush(
+                                context,
+                                ProductDetailScreen(
+                                  productModel: allProducts[i],
+                                ));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: CustomProductCard(
+                              image: allProducts[i]["imageUrl"],
+                              price: allProducts[i]["price"],
+                              salePrice: allProducts[i]["salePrice"],
+                              sale: allProducts[i]["sale"],
+                              title: allProducts[i]["productName"],
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                20.height,
+
+
               ],
             ),
           )
@@ -448,6 +489,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       "size": selectedSize,
     }).then((value) {
       Fluttertoast.showToast(msg: "Added to Cart");
+    });
+  }
+
+  List<DocumentSnapshot> allProducts = [];
+
+  _getProducts() {
+    FirebaseFirestore.instance
+        .collection("product")
+        .limit(3)
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      allProducts.clear();
+      snapshot.docs.forEach((element) {
+        allProducts.add(element);
+        setState(() {});
+      });
     });
   }
 }
