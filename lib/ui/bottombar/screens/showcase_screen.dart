@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_app/navigation/navigation_helper.dart';
 import 'package:shopping_app/ui/bottombar/screens/bannerCategory/banner_categories.dart';
+import 'package:shopping_app/ui/bottombar/screens/products/all_products_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/products/product_detail_screen.dart';
 import 'package:shopping_app/ui/bottombar/screens/story/story_screen.dart';
 import 'package:shopping_app/widgets/banner_card.dart';
@@ -124,10 +125,9 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                     onTap: () {
                       NavigationHelper.navPush(
                           context,
-                          BannerCategory(
-                              categoryList: filterList.isEmpty
-                                  ? allBanners[i]["categories"]
-                                  : filterList[i]["categories"]));
+                          AllProductsScreen(productID: filterList.isEmpty
+                              ? allBanners[i]["categories"]
+                              : filterList[i]["categories"],));
                     },
                     child: BannerCard(
                         image: filterList.isEmpty
