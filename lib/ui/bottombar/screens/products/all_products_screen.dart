@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shopping_app/navigation/navigation_helper.dart';
 import 'package:shopping_app/ui/bottombar/screens/products/product_detail_screen.dart';
+import 'package:shopping_app/utils/constants.dart';
 import 'package:shopping_app/widgets/custom_product_card.dart';
 import 'package:shopping_app/widgets/custom_text.dart';
 
@@ -44,32 +46,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
               decoration: const BoxDecoration(color: Colors.white),
               child: Row(
                 children: [
-                  // Expanded(
-                  //   flex: 1,
-                  //   child: Container(
-                  //     decoration: const BoxDecoration(
-                  //       border: Border(
-                  //         right: BorderSide(
-                  //           color: Colors.black,
-                  //           width: 1.0,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     child: GestureDetector(
-                  //       onTap: () {
-                  //         // Navigator.of(context)
-                  //         //     .pushNamed(FiltersScreen.routeName);
-                  //       },
-                  //       child: const Row(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: [
-                  //           Icon(Icons.filter_alt),
-                  //           Text('Filter by'),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   Expanded(
                     flex: 1,
                     child: GestureDetector(
@@ -97,37 +73,62 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
           ? Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: GridView.builder(
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisExtent:
-                                250,
-                            mainAxisSpacing: 25),
-                    itemCount: allProducts.length,
-                    itemBuilder: (context, i) {
-                      return InkWell(
-                        onTap: () {
-                          NavigationHelper.navPush(
-                              context,
-                              ProductDetailScreen(
-                                productModel: allProducts[i],
-                              ));
-                        },
-                        child: CustomProductCard(
-                          image: allProducts[i]["imageUrl"],
-                          price: allProducts[i]["price"],
-                          salePrice: allProducts[i]["salePrice"],
-                          sale: allProducts[i]["sale"],
-                          title: allProducts[i]["productName"],
-                        ),
-                      );
-                    }),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: CupertinoSearchTextField(
+                      onChanged: (value) {
+                        _filter(value);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  10.height,
+                  Expanded(
+                    child: GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisExtent: 250,
+                                mainAxisSpacing: 25),
+                        itemCount: filterList.isNotEmpty
+                            ? filterList.length
+                            : allProducts.length,
+                        itemBuilder: (context, i) {
+                          return InkWell(
+                            onTap: () {
+                              NavigationHelper.navPush(
+                                  context,
+                                  ProductDetailScreen(
+                                    productModel: filterList.isNotEmpty
+                                        ? filterList[i]
+                                        : allProducts[i],
+                                  ));
+                            },
+                            child: CustomProductCard(
+                              image: filterList.isNotEmpty
+                                  ? filterList[i]["imageUrl"]
+                                  : allProducts[i]["imageUrl"],
+                              price: filterList.isNotEmpty
+                                  ? filterList[i]["price"]
+                                  : allProducts[i]["price"],
+                              salePrice: filterList.isNotEmpty
+                                  ? filterList[i]["salePrice"]
+                                  : allProducts[i]["salePrice"],
+                              sale: filterList.isNotEmpty
+                                  ? filterList[i]["sale"]
+                                  : allProducts[i]["sale"],
+                              title: filterList.isNotEmpty
+                                  ? filterList[i]["productName"]
+                                  : allProducts[i]["productName"],
+                            ),
+                          );
+                        }),
+                  ),
+                ],
               ),
             )
           : Column(
@@ -160,5 +161,18 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         setState(() {});
       });
     });
+  }
+
+  List<DocumentSnapshot> filterList = [];
+
+  _filter(String name) {
+    filterList.clear();
+    for (var item in allProducts) {
+      var title = item['productName'].toString().toLowerCase();
+      if (title.toLowerCase().toString().contains(name.toString())) {
+        filterList.add(item);
+        setState(() {});
+      }
+    }
   }
 }
