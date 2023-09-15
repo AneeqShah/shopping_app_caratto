@@ -345,12 +345,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     fontWeight: FontWeight.bold,
                     textColor: Colors.black),
                 10.height,
+                // Container(
+                //   height: 250,
+                //   width: MediaQuery.of(context).size.width,
+                //   child: ListView.builder(
+                //       itemCount: allProducts.length,
+                //       scrollDirection: Axis.horizontal,
+                //       itemBuilder: (context, i) {
+                //         return InkWell(
+                //           onTap: () {
+                //             NavigationHelper.navPush(
+                //                 context,
+                //                 ProductDetailScreen(
+                //                   productModel: allProducts[i],
+                //                 ));
+                //           },
+                //           child: Padding(
+                //             padding: const EdgeInsets.only(right: 10.0),
+                //             child: CustomProductCard(
+                //               image: allProducts[i]["imageUrl"],
+                //               price: allProducts[i]["price"],
+                //               salePrice: allProducts[i]["salePrice"],
+                //               sale: allProducts[i]["sale"],
+                //               title: allProducts[i]["productName"],
+                //             ),
+                //           ),
+                //         );
+                //       }),
+                // ),
                 Container(
-                  height: 250,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
+                  height: 550,
+                  width: double.infinity,
+                  child: GridView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisExtent: 250,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 25),
                       itemCount: allProducts.length,
-                      scrollDirection: Axis.horizontal,
                       itemBuilder: (context, i) {
                         return InkWell(
                           onTap: () {
@@ -360,19 +393,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   productModel: allProducts[i],
                                 ));
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10.0),
-                            child: CustomProductCard(
-                              image: allProducts[i]["imageUrl"],
-                              price: allProducts[i]["price"],
-                              salePrice: allProducts[i]["salePrice"],
-                              sale: allProducts[i]["sale"],
-                              title: allProducts[i]["productName"],
-                            ),
+                          child: CustomProductCard(
+                            image: allProducts[i]["imageUrl"],
+                            price: allProducts[i]["price"],
+                            salePrice: allProducts[i]["salePrice"],
+                            sale: allProducts[i]["sale"],
+                            title: allProducts[i]["productName"],
                           ),
                         );
                       }),
                 ),
+
                 20.height,
 
 

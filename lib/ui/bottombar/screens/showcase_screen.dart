@@ -27,7 +27,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
 
 //TODO: add possibility get data from any API
   CollectionReference dbInstance =
-      FirebaseFirestore.instance.collection(collectionDbName);
+  FirebaseFirestore.instance.collection(collectionDbName);
 
   @override
   void initState() {
@@ -36,6 +36,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
     _getBanners();
     _getStories();
     _getProducts();
+    _getButtons();
   }
 
   List<DocumentSnapshot> filterList = [];
@@ -77,46 +78,48 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
             10.height,
             allStories.isNotEmpty
                 ? SizedBox(
-                    height: 80,
-                    width: double.infinity,
-                    child: AdvStory(
-                      storyCount: allStories.length - (allStories.length - 1),
-                      storyBuilder: (storyIndex) => Story(
-                        contentCount: allStories.length,
-                        contentBuilder: (contentIndex) => ImageContent(
-                          url: allStories[contentIndex]["imageUrl"],
-                          footer: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomText(
-                                    text: allStories[contentIndex]["title"],
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white),
-                                CustomText(
-                                    text: allStories[contentIndex]
-                                        ["description"],
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.normal,
-                                    textColor: Colors.white),
-                              ],
+              height: 80,
+              width: double.infinity,
+              child: AdvStory(
+                storyCount: allStories.length - (allStories.length - 1),
+                storyBuilder: (storyIndex) =>
+                    Story(
+                      contentCount: allStories.length,
+                      contentBuilder: (contentIndex) =>
+                          ImageContent(
+                            url: allStories[contentIndex]["imageUrl"],
+                            footer: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomText(
+                                      text: allStories[contentIndex]["title"],
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.white),
+                                  CustomText(
+                                      text: allStories[contentIndex]
+                                      ["description"],
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.normal,
+                                      textColor: Colors.white),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      trayBuilder: (index) =>
-                          AdvStoryTray(url: allStories[index]["imageUrl"]),
                     ),
-                  )
+                trayBuilder: (index) =>
+                    AdvStoryTray(url: allStories[index]["imageUrl"]),
+              ),
+            )
                 : Container(),
             5.height,
             const SizedBox(height: 10),
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               itemCount:
-                  filterList.isEmpty ? allBanners.length : filterList.length,
+              filterList.isEmpty ? allBanners.length : filterList.length,
               shrinkWrap: true,
               itemBuilder: (context, i) {
                 return Padding(
@@ -143,12 +146,24 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                 );
               },
             ),
-            const SizedBox(height: 10),
-            LinkButton('About the sky in diamonds'),
-            const SizedBox(height: 10),
-            LinkButton('Contract offer'),
-            const SizedBox(height: 10),
-            LinkButton('Delivery terms'),
+
+            SizedBox(
+              height: buttonList.length * 60,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                  itemCount: buttonList.length,
+                  itemBuilder: (context, i) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: LinkButton(buttonList[i]["name"]),
+                );
+              }),
+            ),
+
             const CustomText(
                 text: "Popular Products",
                 fontSize: 16,
@@ -156,9 +171,10 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                 textColor: Colors.black),
             10.height,
             Container(
-              height: 500,
+              height: 550,
               width: double.infinity,
               child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       mainAxisExtent: 250,
@@ -195,7 +211,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
 
   _getBanners() {
     FirebaseFirestore.instance
-        .collection("banners")
+        .collection("banners").orderBy("dateTime", descending: true)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       allBanners.clear();
@@ -219,7 +235,7 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
 
   _getStories() {
     FirebaseFirestore.instance
-        .collection("status")
+        .collection("status").orderBy("dateTime", descending: false)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       allStories.clear();
@@ -235,13 +251,27 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
 
   _getProducts() {
     FirebaseFirestore.instance
-        .collection("product")
+        .collection("product").orderBy("dateTime", descending: true)
         .limit(3)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       allProducts.clear();
       snapshot.docs.forEach((element) {
         allProducts.add(element);
+        setState(() {});
+      });
+    });
+  }
+
+  List<DocumentSnapshot> buttonList = [];
+
+  _getButtons() {
+    FirebaseFirestore.instance
+        .collection("buttons")
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((element) {
+        buttonList.add(element);
         setState(() {});
       });
     });

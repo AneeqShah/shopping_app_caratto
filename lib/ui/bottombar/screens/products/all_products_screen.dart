@@ -278,6 +278,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
         .collection("product")
         .where("categoryID", isEqualTo: widget.productID)
         .orderBy("price", descending: high)
+        .orderBy("dateTime", descending: true)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       allProducts.clear();
@@ -316,4 +317,6 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
       });
     });
   }
+
+
 }

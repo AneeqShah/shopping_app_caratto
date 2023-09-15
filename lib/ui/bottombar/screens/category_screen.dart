@@ -86,7 +86,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   _getCategories() {
     FirebaseFirestore.instance
-        .collection("category")
+        .collection("category").orderBy("dateTime" , descending: false)
         .snapshots()
         .listen((QuerySnapshot snapshot) {
       snapshot.docs.forEach((element) {
