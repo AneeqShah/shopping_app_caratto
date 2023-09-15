@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class LinkButton extends StatelessWidget {
   String title;
+  Function onTap;
 
-  LinkButton(this.title, {super.key});
+  LinkButton(this.title, this.onTap, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class LinkButton extends StatelessWidget {
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
-        onPressed: () {},
+        onPressed: () => onTap(),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Text(

@@ -9,6 +9,7 @@ import 'package:shopping_app/ui/bottombar/screens/products/product_detail_screen
 import 'package:shopping_app/ui/bottombar/screens/story/story_screen.dart';
 import 'package:shopping_app/widgets/banner_card.dart';
 import 'package:shopping_app/widgets/custom_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/constants.dart';
 import '../../../widgets/custom_product_card.dart';
@@ -159,7 +160,11 @@ class _ShowCaseScreenState extends State<ShowCaseScreen> {
                   itemBuilder: (context, i) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: LinkButton(buttonList[i]["name"]),
+                  child: LinkButton(buttonList[i]["name"] ,()async{
+                    if (!await launchUrl(Uri.parse(buttonList[i]["url"]))) {
+                    throw Exception('Could not launch ${buttonList[i]["url"]}');
+                    }
+                  }),
                 );
               }),
             ),
